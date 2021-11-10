@@ -1,0 +1,31 @@
+﻿@page "/solver"
+@using Domain;
+
+<h3>Solver</h3>
+
+<SudokuBoard Board="@Board"></SudokuBoard>
+
+@code {
+    protected Board Board { get; set; }
+
+    public Solver()
+    {
+        Board = new Board();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Board = new Board.Builder()
+            .WithColumn(0, new Column.Builder().WithCell(1, 3).WithCell(4, 6).WithCell(5, 9).Build())
+            .WithColumn(1, new Column.Builder().WithCell(1, 5).WithCell(3, 1).WithCell(6, 2).WithCell(7, 4).WithCell(8, 8).Build())
+            .WithColumn(2, new Column.Builder().WithCell(1, 2).Build())
+            .WithColumn(3, new Column.Builder().WithCell(0, 7).WithCell(4, 3).WithCell(7, 5).Build())
+            .WithColumn(4, new Column.Builder().WithCell(0, 9).WithCell(3, 7).WithCell(5, 8).WithCell(8, 3).Build())
+            .WithColumn(5, new Column.Builder().WithCell(1, 8).WithCell(4, 1).WithCell(8, 7).Build())
+            .WithColumn(6, new Column.Builder().WithCell(7, 8).Build())
+            .WithColumn(7, new Column.Builder().WithCell(0, 5).WithCell(1, 4).WithCell(2, 8).WithCell(5, 1).WithCell(7, 9).Build())
+            .WithColumn(8, new Column.Builder().WithCell(3, 4).WithCell(4, 8).WithCell(7, 1).Build())
+            .Build();
+    }
+}

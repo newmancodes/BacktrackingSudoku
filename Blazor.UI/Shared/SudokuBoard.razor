@@ -1,0 +1,55 @@
+﻿@using Domain;
+
+<table>
+    <tbody>
+        @foreach (var row in Board.Rows)
+        {
+            <tr>
+                @foreach (var cell in row)
+                {
+                    <td class="@cell.ValueType">
+                        @if (cell.Value.HasValue)
+                        {
+                            @cell.Value
+                        }
+                        else
+                        {
+                            new MarkupString("&nbsp;");
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    table, th, td {
+        border-width: 1px;
+        border-style: solid;
+        border-color: black;
+        border-collapse: collapse;
+    }
+
+    td {
+        width: 2em;
+        height: 30px;
+    }
+
+    .Fixed {
+        background-color: lightgray;
+        text-align: center;
+        vertical-align: middle;
+        font-weight: bolder;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public Board Board { get; set; }
+
+    public SudokuBoard()
+    {
+        this.Board = new Board();
+    }
+}

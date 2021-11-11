@@ -146,6 +146,8 @@
         for (var guess = 1; guess <= 9; guess++)
         {
             Board[columnIndex][rowIndex].Guess(guess);
+            StateHasChanged();
+            await Task.Delay(1);
             if (constraints.All(c => c.IsValid()))
             {
                 if (rowIndex == 8)

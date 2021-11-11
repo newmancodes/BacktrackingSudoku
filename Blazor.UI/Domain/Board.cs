@@ -4,6 +4,8 @@
     {
         private readonly Column[] _columns;
 
+        public IEnumerable<Column> Columns => _columns;
+
         public Board()
         {
             _columns = Enumerable.Range(0, 9).Select(_ => new Column()).ToArray();
@@ -12,6 +14,11 @@
         public Board(Column[] columns)
         {
             _columns = columns;
+        }
+
+        public Column this[int index]
+        {
+            get => _columns[index];
         }
 
         public IEnumerable<IEnumerable<Cell>> Rows

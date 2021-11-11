@@ -4,6 +4,8 @@
     {
         private readonly Cell[] _cells;
 
+        public IEnumerable<Cell> Cells => _cells;
+
         public Column()
         {
             _cells = Enumerable.Range(0, 9).Select(_ => new Cell()).ToArray();

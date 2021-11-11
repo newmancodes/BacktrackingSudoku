@@ -3,7 +3,61 @@
 
 <h3>Solver</h3>
 
-<SudokuBoard Board="@Board"></SudokuBoard>
+<div>
+    <table>
+        <tbody>
+            @foreach (var row in Board.Rows)
+            {
+                <tr>
+                    @foreach (var cell in row)
+                    {
+                        <td class="@cell.ValueType">
+                            @if (cell.Value.HasValue)
+                            {
+                                @cell.Value
+                            }
+                            else
+                            {
+                                new MarkupString("&nbsp;");
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<button @onclick="Solve">Solve it</button>
+
+<style>
+    div {
+        margin: 10px 10px 10px 0px;
+    }
+    
+    table, th, td {
+        border-width: 1px;
+        border-style: solid;
+        border-color: black;
+        border-collapse: collapse;
+    }
+
+    td {
+        width: 2em;
+        height: 30px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .Guess {
+        font-style: italic;
+    }
+
+    .Fixed {
+        background-color: lightgray;
+        font-weight: bolder;
+    }
+</style>
 
 @code {
     protected Board Board { get; set; }
@@ -27,5 +81,87 @@
             .WithColumn(7, new Column.Builder().WithCell(0, 5).WithCell(1, 4).WithCell(2, 8).WithCell(5, 1).WithCell(7, 9).Build())
             .WithColumn(8, new Column.Builder().WithCell(3, 4).WithCell(4, 8).WithCell(7, 1).Build())
             .Build();
+    }
+
+    protected async Task Solve()
+    {
+        ICollection<IConstraint> constraints = new List<IConstraint>();
+
+        // Add row unique constraints
+        for (var rowIndex = 0; rowIndex < 9; rowIndex++)
+        {
+            constraints.Add(new EachDigitRepresentedOnceConstraint(Board.Columns.Select(c => c[rowIndex])));
+        }
+
+        // Add column unique constraints
+        foreach (var column in Board.Columns)
+        {
+            constraints.Add(new EachDigitRepresentedOnceConstraint(column.Cells));
+        }
+
+        // Add sub-grid unique constraints
+        for (var leftAnchor = 0; leftAnchor < 9; leftAnchor = leftAnchor + 3)
+        {
+            for (var topAnchor = 0; topAnchor < 9; topAnchor = topAnchor + 3)
+            {
+                var subGridCells = new[]
+                {
+                    Board[leftAnchor][topAnchor],
+                    Board[leftAnchor][topAnchor + 1],
+                    Board[leftAnchor][topAnchor + 2],
+                    Board[leftAnchor + 1][topAnchor],
+                    Board[leftAnchor + 1][topAnchor + 1],
+                    Board[leftAnchor + 1][topAnchor + 2],
+                    Board[leftAnchor + 2][topAnchor],
+                    Board[leftAnchor + 2][topAnchor + 1],
+                    Board[leftAnchor + 2][topAnchor + 2],
+                };
+
+                constraints.Add(new EachDigitRepresentedOnceConstraint(subGridCells));
+            }
+        }
+
+        // TODO : Add Tetris Sum constraints
+
+        var isSolved = await Solve(0, 0, constraints.ToArray());
+
+        StateHasChanged();
+    }
+
+    private async Task<bool> Solve(int columnIndex, int rowIndex, IConstraint[] constraints)
+    {
+        if (columnIndex == 9)
+        {
+            return true;
+        }
+
+        if (Board[columnIndex][rowIndex].ValueType == Domain.ValueType.Fixed)
+        {
+            if (rowIndex == 8)
+                return await Solve(columnIndex + 1, 0, constraints);
+            else
+                return await Solve(columnIndex, rowIndex + 1, constraints);
+        }
+
+        for (var guess = 1; guess <= 9; guess++)
+        {
+            Board[columnIndex][rowIndex].Guess(guess);
+            if (constraints.All(c => c.IsValid()))
+            {
+                if (rowIndex == 8)
+                {
+                    if (await Solve(columnIndex + 1, 0, constraints))
+                        return true;
+                }
+                else
+                {
+                    if (await Solve(columnIndex, rowIndex + 1, constraints))
+                        return true;
+                }
+            }
+        }
+
+        Board[columnIndex][rowIndex].Clear();
+        return false;
     }
 }

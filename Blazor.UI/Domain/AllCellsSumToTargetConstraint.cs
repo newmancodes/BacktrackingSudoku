@@ -13,8 +13,14 @@
 
         public bool IsValid()
         {
-            return _cells.All(c => c.Value.HasValue)
-                && _cells.Sum(c => c.Value.Value) == _target;
+            if (_cells.Any(c => !c.Value.HasValue))
+            {
+                return _cells.Where(c => c.Value.HasValue).Sum(c => c.Value.Value) < _target;
+            }
+            else
+            {
+                return _cells.Sum(c => c.Value.Value) == _target;
+            }
         }
     }
 }

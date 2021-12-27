@@ -1,13 +1,102 @@
 ﻿@using Domain;
+@using System.Diagnostics
 
+<table>
+    <tbody>
+        @foreach (var row in Board.Rows)
+        {
+            <tr>
+                @foreach (var cell in row)
+                {
+                    <td class="@cell.ValueType">
+                        @if (cell.Value.HasValue)
+                        {
+                            @cell.Value
+                        }
+                        else
+                        {
+                            new MarkupString("&nbsp;");
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
 
+<style>
+    div {
+        margin: 10px 10px 10px 0px;
+    }
+    
+    table, th, td {
+        border-width: 1px;
+        border-style: solid;
+        border-color: black;
+        border-collapse: collapse;
+    }
+
+    td {
+        width: 2em;
+        height: 30px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .Guess {
+        font-style: italic;
+    }
+
+    .Fixed {
+        background-color: lightgray;
+        font-weight: bolder;
+    }
+</style>
 
 @code {
     [Parameter]
     public Board Board { get; set; }
+    
+    [Parameter]
+    public IReadOnlyCollection<IConstraint> Constraints { get; set; }
 
-    public SudokuBoard()
+    public async Task<bool> Solve(int columnIndex, int rowIndex)
     {
-        this.Board = new Board();
+        if (columnIndex == 9)
+        {
+            return true;
+        }
+
+        if (Board[columnIndex][rowIndex].ValueType == Domain.ValueType.Fixed)
+        {
+            if (rowIndex == 8)
+                return await Solve(columnIndex + 1, 0);
+
+            return await Solve(columnIndex, rowIndex + 1);
+        }
+
+        for (var guess = 1; guess <= 9; guess++)
+        {
+            Board[columnIndex][rowIndex].Guess(guess);
+            StateHasChanged();
+            await Task.Delay(150);
+
+            if (Constraints.All(c => c.IsValid()))
+            {
+                if (rowIndex == 8)
+                {
+                    if (await Solve(columnIndex + 1, 0))
+                        return true;
+                }
+                else
+                {
+                    if (await Solve(columnIndex, rowIndex + 1))
+                        return true;
+                }
+            }
+        }
+
+        Board[columnIndex][rowIndex].Clear();
+        return false;
     }
 }

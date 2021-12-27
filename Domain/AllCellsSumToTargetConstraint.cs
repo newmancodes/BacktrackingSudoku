@@ -1,4 +1,4 @@
-﻿namespace Blazor.UI.Domain
+﻿namespace Domain
 {
     public class AllCellsSumToTargetConstraint : IConstraint
     {
@@ -17,10 +17,8 @@
             {
                 return _cells.Where(c => c.Value.HasValue).Sum(c => c.Value.Value) < _target;
             }
-            else
-            {
-                return _cells.Sum(c => c.Value.Value) == _target;
-            }
+
+            return _cells.Sum(c => c.Value.Value) == _target;
         }
     }
 }

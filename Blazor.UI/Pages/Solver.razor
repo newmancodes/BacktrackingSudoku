@@ -1,92 +1,43 @@
 ﻿@page "/"
 @using Domain;
-@using System.Diagnostics
 
 <h3>Solver</h3>
 
 <div>
-    <table>
-        <tbody>
-            @foreach (var row in Board.Rows)
-            {
-                <tr>
-                    @foreach (var cell in row)
-                    {
-                        <td class="@cell.ValueType">
-                            @if (cell.Value.HasValue)
-                            {
-                                @cell.Value
-                            }
-                            else
-                            {
-                                new MarkupString("&nbsp;");
-                            }
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
+    @foreach (var board in Boards)
+    {
+        <SudokuBoard Board="board" Constraints="@Constraints"></SudokuBoard>
+    }
 </div>
 
 <button @onclick="Solve">Solve it</button>
 
-<style>
-    div {
-        margin: 10px 10px 10px 0px;
-    }
-    
-    table, th, td {
-        border-width: 1px;
-        border-style: solid;
-        border-color: black;
-        border-collapse: collapse;
-    }
-
-    td {
-        width: 2em;
-        height: 30px;
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    .Guess {
-        font-style: italic;
-    }
-
-    .Fixed {
-        background-color: lightgray;
-        font-weight: bolder;
-    }
-</style>
-
 @code {
-    protected Board Board { get; set; }
+    private IEnumerable<Board> Boards { get; set; }
+    
+    private IReadOnlyCollection<IConstraint> Constraints { get; set; }
 
     public Solver()
     {
-        Board = new Board();
+        Boards = Array.Empty<Board>();
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Board = new Board.Builder()
-            //.WithColumn(0, new Column.Builder().WithCell(1, 3).WithCell(4, 6).WithCell(5, 9).Build())
-            //.WithColumn(1, new Column.Builder().WithCell(1, 5).WithCell(3, 1).WithCell(6, 2).WithCell(7, 4).WithCell(8, 8).Build())
-            //.WithColumn(2, new Column.Builder().WithCell(1, 2).Build())
-            //.WithColumn(3, new Column.Builder().WithCell(0, 7).WithCell(4, 3).WithCell(7, 5).Build())
-            //.WithColumn(4, new Column.Builder().WithCell(0, 9).WithCell(3, 7).WithCell(5, 8).WithCell(8, 3).Build())
-            //.WithColumn(5, new Column.Builder().WithCell(1, 8).WithCell(4, 1).WithCell(8, 7).Build())
-            //.WithColumn(6, new Column.Builder().WithCell(7, 8).Build())
-            //.WithColumn(7, new Column.Builder().WithCell(0, 5).WithCell(1, 4).WithCell(2, 8).WithCell(5, 1).WithCell(7, 9).Build())
-            //.WithColumn(8, new Column.Builder().WithCell(3, 4).WithCell(4, 8).WithCell(7, 1).Build())
+        var board = new Board.Builder()
+            .WithColumn(0, new Column.Builder().WithCell(1, 3).WithCell(4, 6).WithCell(5, 9).Build())
+            .WithColumn(1, new Column.Builder().WithCell(1, 5).WithCell(3, 1).WithCell(6, 2).WithCell(7, 4).WithCell(8, 8).Build())
+            .WithColumn(2, new Column.Builder().WithCell(1, 2).Build())
+            .WithColumn(3, new Column.Builder().WithCell(0, 7).WithCell(4, 3).WithCell(7, 5).Build())
+            .WithColumn(4, new Column.Builder().WithCell(0, 9).WithCell(3, 7).WithCell(5, 8).WithCell(8, 3).Build())
+            .WithColumn(5, new Column.Builder().WithCell(1, 8).WithCell(4, 1).WithCell(8, 7).Build())
+            .WithColumn(6, new Column.Builder().WithCell(7, 8).Build())
+            .WithColumn(7, new Column.Builder().WithCell(0, 5).WithCell(1, 4).WithCell(2, 8).WithCell(5, 1).WithCell(7, 9).Build())
+            .WithColumn(8, new Column.Builder().WithCell(3, 4).WithCell(4, 8).WithCell(7, 1).Build())
             .Build();
-    }
 
-    protected async Task Solve()
-    {
-        ICollection<IConstraint> constraints = new List<IConstraint>();
+        var constraints = new List<IConstraint>();
         
         // Add Tetris Sum constraints
         // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][0], Board[0][1], Board[0][2], Board[1][1] }, 25));
@@ -131,11 +82,11 @@
         // Add row unique constraints
         for (var rowIndex = 0; rowIndex < 9; rowIndex++)
         {
-            constraints.Add(new EachDigitRepresentedOnceConstraint(Board.Columns.Select(c => c[rowIndex])));
+            constraints.Add(new EachDigitRepresentedOnceConstraint(board.Columns.Select(c => c[rowIndex])));
         }
 
         // Add column unique constraints
-        foreach (var column in Board.Columns)
+        foreach (var column in board.Columns)
         {
             constraints.Add(new EachDigitRepresentedOnceConstraint(column.Cells));
         }
@@ -147,69 +98,37 @@
             {
                 var subGridCells = new[]
                 {
-                    Board[leftAnchor][topAnchor],
-                    Board[leftAnchor][topAnchor + 1],
-                    Board[leftAnchor][topAnchor + 2],
-                    Board[leftAnchor + 1][topAnchor],
-                    Board[leftAnchor + 1][topAnchor + 1],
-                    Board[leftAnchor + 1][topAnchor + 2],
-                    Board[leftAnchor + 2][topAnchor],
-                    Board[leftAnchor + 2][topAnchor + 1],
-                    Board[leftAnchor + 2][topAnchor + 2],
+                    board[leftAnchor][topAnchor],
+                    board[leftAnchor][topAnchor + 1],
+                    board[leftAnchor][topAnchor + 2],
+                    board[leftAnchor + 1][topAnchor],
+                    board[leftAnchor + 1][topAnchor + 1],
+                    board[leftAnchor + 1][topAnchor + 2],
+                    board[leftAnchor + 2][topAnchor],
+                    board[leftAnchor + 2][topAnchor + 1],
+                    board[leftAnchor + 2][topAnchor + 2],
                 };
 
                 constraints.Add(new EachDigitRepresentedOnceConstraint(subGridCells));
             }
         }
 
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
-        await Solve(0, 0, constraints.ToArray(), stopwatch);
-        stopwatch.Stop();
+        Constraints = constraints;
 
-        StateHasChanged();
+        if (constraints.OfType<AllCellsSumToTargetConstraint>().Any()
+            || constraints.OfType<AllCellsAreDistinctAndSumToTargetConstraint>().Any())
+        {
+            // Generate candidate boards...
+        }
+        else
+        {
+            Boards = new[] { board };
+        }
     }
 
-    private async Task<bool> Solve(int columnIndex, int rowIndex, IConstraint[] constraints, Stopwatch stopwatch)
+    private async Task Solve()
     {
-        if (columnIndex == 9)
-        {
-            return true;
-        }
-
-        if (Board[columnIndex][rowIndex].ValueType == Domain.ValueType.Fixed)
-        {
-            if (rowIndex == 8)
-                return await Solve(columnIndex + 1, 0, constraints, stopwatch);
-            else
-                return await Solve(columnIndex, rowIndex + 1, constraints, stopwatch);
-        }
-
-        for (var guess = 1; guess <= 9; guess++)
-        {
-            Board[columnIndex][rowIndex].Guess(guess);
-            if (stopwatch.ElapsedMilliseconds > 2_000)
-            {
-                StateHasChanged();
-                stopwatch.Restart();
-                await Task.Delay(1);
-            }
-            if (constraints.All(c => c.IsValid()))
-            {
-                if (rowIndex == 8)
-                {
-                    if (await Solve(columnIndex + 1, 0, constraints, stopwatch))
-                        return true;
-                }
-                else
-                {
-                    if (await Solve(columnIndex, rowIndex + 1, constraints, stopwatch))
-                        return true;
-                }
-            }
-        }
-
-        Board[columnIndex][rowIndex].Clear();
-        return false;
+        await Solve(0, 0);
+        StateHasChanged();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Blazor.UI.Domain
+﻿namespace Domain
 {
     public class EachDigitRepresentedOnceConstraint : IConstraint
     {

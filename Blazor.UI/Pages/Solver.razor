@@ -1,4 +1,4 @@
-﻿@page "/solver"
+﻿@page "/"
 @using Domain;
 @using System.Diagnostics
 
@@ -116,17 +116,17 @@
         // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][5], Board[8][6], Board[8][7] }, 16));
         
         // Add "It All Hinges On This Puzzle..." Constraints - https://www.youtube.com/watch?v=sLTxD8bjC8g
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][1], Board[0][2], Board[1][2] }, 13));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][0], Board[2][0] }, 13));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][3], Board[2][3], Board[2][4] }, 24));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][5], Board[0][6] }, 11));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[2][8], Board[3][8] }, 12));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][1], Board[3][2], Board[4][2] }, 6));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][6], Board[5][6], Board[5][7] }, 24));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[7][0], Board[8][0], Board[8][1] }, 19));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][4], Board[6][5], Board[7][5] }, 6));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][6], Board[8][7] }, 14));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][7], Board[6][8], Board[7][8] }, 13));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][1], Board[0][2], Board[1][2] }, 13));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][0], Board[2][0] }, 13));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][3], Board[2][3], Board[2][4] }, 24));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][5], Board[0][6] }, 11));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[2][8], Board[3][8] }, 12));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][1], Board[3][2], Board[4][2] }, 6));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][6], Board[5][6], Board[5][7] }, 24));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[7][0], Board[8][0], Board[8][1] }, 19));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][4], Board[6][5], Board[7][5] }, 6));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][6], Board[8][7] }, 14));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][7], Board[6][8], Board[7][8] }, 13));
 
         // Add row unique constraints
         for (var rowIndex = 0; rowIndex < 9; rowIndex++)

@@ -1,5 +1,6 @@
 ﻿@page "/solver"
 @using Domain;
+@using System.Diagnostics
 
 <h3>Solver</h3>
 
@@ -88,31 +89,44 @@
         ICollection<IConstraint> constraints = new List<IConstraint>();
         
         // Add Tetris Sum constraints
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][0], Board[0][1], Board[0][2], Board[1][1] }, 25));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][3], Board[0][4], Board[0][5] }, 7));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][6], Board[1][6], Board[1][7], Board[2][7] }, 21));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][7], Board[0][8], Board[1][8], Board[2][8] }, 16));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][0], Board[2][0], Board[3][0] }, 17));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][2], Board[1][3], Board[1][4], Board[1][5]}, 27));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[2][1], Board[2][2], Board[2][3], Board[2][4]}, 16));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[2][5], Board[2][6] }, 15));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][1], Board[3][2], Board[4][2] }, 16));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][3], Board[4][3] }, 5));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][4], Board[4][4], Board[4][5], Board[5][4] }, 22));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][5], Board[3][6] }, 8));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][0], Board[5][0] }, 5));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][1], Board[5][1], Board[5][2], Board[6][1] }, 21));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][6], Board[3][7], Board[4][7], Board[3][8] }, 26));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[5][3], Board[6][3], Board[6][4], Board[7][4] }, 25));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[5][5], Board[6][5], Board[7][5] }, 8));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[5][6], Board[5][7], Board[4][8], Board[5][8] }, 17));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][0], Board[7][0], Board[7][1], Board[8][0] }, 18));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][2], Board[7][2], Board[7][3] }, 17));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][6], Board[6][7], Board[7][6], Board[7][7] }, 17));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][8], Board[7][8], Board[8][8] }, 21));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][1], Board[8][2] }, 7));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][3], Board[8][4] }, 12));
-        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][5], Board[8][6], Board[8][7] }, 16));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][0], Board[0][1], Board[0][2], Board[1][1] }, 25));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][3], Board[0][4], Board[0][5] }, 7));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][6], Board[1][6], Board[1][7], Board[2][7] }, 21));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][7], Board[0][8], Board[1][8], Board[2][8] }, 16));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][0], Board[2][0], Board[3][0] }, 17));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][2], Board[1][3], Board[1][4], Board[1][5]}, 27));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[2][1], Board[2][2], Board[2][3], Board[2][4]}, 16));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[2][5], Board[2][6] }, 15));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][1], Board[3][2], Board[4][2] }, 16));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][3], Board[4][3] }, 5));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][4], Board[4][4], Board[4][5], Board[5][4] }, 22));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][5], Board[3][6] }, 8));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][0], Board[5][0] }, 5));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][1], Board[5][1], Board[5][2], Board[6][1] }, 21));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][6], Board[3][7], Board[4][7], Board[3][8] }, 26));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[5][3], Board[6][3], Board[6][4], Board[7][4] }, 25));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[5][5], Board[6][5], Board[7][5] }, 8));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[5][6], Board[5][7], Board[4][8], Board[5][8] }, 17));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][0], Board[7][0], Board[7][1], Board[8][0] }, 18));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][2], Board[7][2], Board[7][3] }, 17));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][6], Board[6][7], Board[7][6], Board[7][7] }, 17));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][8], Board[7][8], Board[8][8] }, 21));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][1], Board[8][2] }, 7));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][3], Board[8][4] }, 12));
+        // constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][5], Board[8][6], Board[8][7] }, 16));
+        
+        // Add "It All Hinges On This Puzzle..." Constraints - https://www.youtube.com/watch?v=sLTxD8bjC8g
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][1], Board[0][2], Board[1][2] }, 13));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][0], Board[2][0] }, 13));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[1][3], Board[2][3], Board[2][4] }, 24));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[0][5], Board[0][6] }, 11));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[2][8], Board[3][8] }, 12));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[3][1], Board[3][2], Board[4][2] }, 6));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[4][6], Board[5][6], Board[5][7] }, 24));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[7][0], Board[8][0], Board[8][1] }, 19));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][4], Board[6][5], Board[7][5] }, 6));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[8][6], Board[8][7] }, 14));
+        constraints.Add(new AllCellsSumToTargetConstraint(new[] { Board[6][7], Board[6][8], Board[7][8] }, 13));
 
         // Add row unique constraints
         for (var rowIndex = 0; rowIndex < 9; rowIndex++)
@@ -148,12 +162,15 @@
             }
         }
 
-        var isSolved = await Solve(0, 0, constraints.ToArray());
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        await Solve(0, 0, constraints.ToArray(), stopwatch);
+        stopwatch.Stop();
 
         StateHasChanged();
     }
 
-    private async Task<bool> Solve(int columnIndex, int rowIndex, IConstraint[] constraints)
+    private async Task<bool> Solve(int columnIndex, int rowIndex, IConstraint[] constraints, Stopwatch stopwatch)
     {
         if (columnIndex == 9)
         {
@@ -163,26 +180,30 @@
         if (Board[columnIndex][rowIndex].ValueType == Domain.ValueType.Fixed)
         {
             if (rowIndex == 8)
-                return await Solve(columnIndex + 1, 0, constraints);
+                return await Solve(columnIndex + 1, 0, constraints, stopwatch);
             else
-                return await Solve(columnIndex, rowIndex + 1, constraints);
+                return await Solve(columnIndex, rowIndex + 1, constraints, stopwatch);
         }
 
         for (var guess = 1; guess <= 9; guess++)
         {
             Board[columnIndex][rowIndex].Guess(guess);
-            StateHasChanged();
-            await Task.Delay(1);
+            if (stopwatch.ElapsedMilliseconds > 2_000)
+            {
+                StateHasChanged();
+                stopwatch.Restart();
+                await Task.Delay(1);
+            }
             if (constraints.All(c => c.IsValid()))
             {
                 if (rowIndex == 8)
                 {
-                    if (await Solve(columnIndex + 1, 0, constraints))
+                    if (await Solve(columnIndex + 1, 0, constraints, stopwatch))
                         return true;
                 }
                 else
                 {
-                    if (await Solve(columnIndex, rowIndex + 1, constraints))
+                    if (await Solve(columnIndex, rowIndex + 1, constraints, stopwatch))
                         return true;
                 }
             }
